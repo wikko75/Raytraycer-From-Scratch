@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="RaytraycerFromScratch.vcxproj" Id="ce7adcf4-ef3c-4c43-a50b-2c8ad399f682" />
+</Solution>
