@@ -1,0 +1,6 @@
+---
+Checks:            '*, -llvm*, -abseil*, -altera*, -google*, -objc*, -android*, -fuchsia*, -zircon-temporary-objects'
+WarningsAsErrors:  ''
+HeaderFilterRegex: '.*'
+FormatStyle:       'file'
+User:              wikto
