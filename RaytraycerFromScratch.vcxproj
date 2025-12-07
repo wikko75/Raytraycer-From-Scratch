@@ -25,6 +25,7 @@
     <ClCompile Include="src\Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="inc\Camera.h" />
     <ClInclude Include="inc\Color.h" />
     <ClInclude Include="inc\Interval.h" />
     <ClInclude Include="inc\Utils.h" />
