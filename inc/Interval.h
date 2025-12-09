@@ -31,6 +31,17 @@ public:
 		return (m_min < t) && (t < m_max);
 	}
 
+	[[nodiscard]] constexpr auto clamp(double value) const -> double
+	{
+		if (value < m_min)
+			return m_min;
+		
+		if (value > m_max)
+			return m_max;
+		
+		return value;
+	}
+
 	[[nodiscard]] constexpr auto get_max() const -> double
 	{
 		return m_max;
