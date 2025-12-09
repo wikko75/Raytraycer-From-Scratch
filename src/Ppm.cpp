@@ -4,6 +4,7 @@
 #include <format>
 #include "Color.h"
 #include <string_view>
+#include "Interval.h"
 
 PpmFile::PpmFile(std::string_view name, const Header& header)
 	: m_header{header}
@@ -27,10 +28,12 @@ auto PpmFile::is_open() const noexcept -> bool
 
 auto PpmFile::write_color(const Color3& color) -> void
 {
-	m_stream << static_cast<int>(m_header.max_color * color.r())
+	constexpr Interval normalized_color{0.0, 0.9999};
+
+	m_stream << static_cast<int>(m_header.max_color * normalized_color.clamp(color.r()))
 		<< ' '
-		<< static_cast<int>(m_header.max_color * color.g())
+		<< static_cast<int>(m_header.max_color * normalized_color.clamp(color.g()))
 		<< ' '
-		<< static_cast<int>(m_header.max_color * color.b())
+		<< static_cast<int>(m_header.max_color * normalized_color.clamp(color.b()))
 		<< '\n';
 }
