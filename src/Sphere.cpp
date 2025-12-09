@@ -25,7 +25,7 @@ auto Sphere::hit(const Ray& ray, const Interval& ray_interval) const -> std::opt
 	//simplified
 	const float a{ ray.get_direction().length_squared() };
 	const float h{ Vec3::dot(ray.get_direction(), m_position - ray.get_origin()) };
-	const float c{ (m_position - ray.get_origin()).length_squared() - static_cast<float>(std::pow(m_radius, 2)) };
+	const float c{ (m_position - ray.get_origin()).length_squared() - m_radius * m_radius };
 
 	const float delta{ (h * h) - (a * c) };
 
@@ -48,7 +48,7 @@ auto Sphere::hit(const Ray& ray, const Interval& ray_interval) const -> std::opt
 	}
 
 	const Vec3 hit_point{ ray.at(t) };
-	const Vec3 normal{ (hit_point - m_position).unit_vector() };
+	const Vec3 normal{ (hit_point - m_position) / m_radius };
 	
 	HitResult hit_result{ .t = t, .hit_point = hit_point, .normal = normal, .front_face{} };
 	hit_result.set_face_normal(ray, normal);
