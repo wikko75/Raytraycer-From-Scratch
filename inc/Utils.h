@@ -1,4 +1,5 @@
 #pragma once
+#include "Vec.h"
 #include <limits>
 #include <numbers>
 #include <random>
@@ -11,14 +12,20 @@ namespace constants {
 }
 
 namespace utility_functions {
-	constexpr auto radians(double degrees) -> double
+
+	[[nodiscard]] constexpr auto radians(double degrees) -> double
 	{
 		return (degrees / 180) * constants::pi;
 	}
 
-	constexpr auto degrees(double radians) -> double
+	[[nodiscard]] constexpr auto degrees(double radians) -> double
 	{
 		return (radians / constants::pi) * 180;
+	}
+
+	[[nodiscard]] constexpr auto lerp(const Vec3& first, const Vec3& second, float value) -> Vec3
+	{
+		return (1 - value) * first + (value * second);
 	}
 
 	[[nodiscard]] inline auto random_real_number() -> float

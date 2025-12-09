@@ -33,11 +33,6 @@ public:
 	}
 
 private:
-	// TODO move to Utils.h
-	[[nodiscard]] constexpr auto lerp(const Vec3& first, const Vec3& second, float value) const -> Vec3
-	{
-		return (1 - value) * first + (value * second);
-	}
 
 	[[nodiscard]] constexpr auto ray_color(const Ray& ray, const HittableList& objects) const -> Color3
 	{
@@ -50,7 +45,7 @@ private:
 		}
 
 		const Vec3 rey_direction_normalized{ ray.get_direction().unit_vector() };
-		return lerp(Color3{ 1.f, 1.f, 1.f }, Color3{ 0.f,0.f,1.f }, 0.5f * (rey_direction_normalized.y() + 1.f));
+		return utility_functions::lerp(Color3{ 1.f, 1.f, 1.f }, Color3{ 0.f,0.f,1.f }, 0.5f * (rey_direction_normalized.y() + 1.f));
 	}
 
 private:
