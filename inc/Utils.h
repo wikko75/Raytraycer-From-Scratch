@@ -39,4 +39,14 @@ namespace utility_functions {
 	{
 		return range_min + (range_max - range_min) * random_real_number();
 	}
+
+	[[nodiscard]] inline auto random_vec3() -> Vec3
+	{
+		return Vec3{ random_real_number(), random_real_number(), random_real_number() };
+	}
+
+	[[nodiscard]] inline auto random_vec3(float range_min, float range_max) -> Vec3
+	{
+		return Vec3{ random_real_number(range_min, range_max), random_real_number(range_min, range_max), random_real_number(range_min, range_max) };
+	}
 }
