@@ -22,6 +22,9 @@ public:
 	auto write_color(const Color3& color) -> void;
 
 private:
+	auto to_gamma_space(const Color3& color) const -> Color3;
+
+private:
 	Header m_header;
 	std::ofstream m_stream;
 	bool m_is_open;
