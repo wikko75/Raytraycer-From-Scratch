@@ -75,4 +75,9 @@ namespace utility_functions {
 
 		return -random_vec;
 	}
+
+	inline auto random_lambertian_distribution_vec(const Vec3& normal) -> Vec3
+	{
+		return random_unit_vec() + normal;
+	}
 }
