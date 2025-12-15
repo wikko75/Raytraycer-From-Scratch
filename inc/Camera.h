@@ -57,7 +57,9 @@ private:
 		if (hit_result.has_value())
 		{
 			// map normal to RGB [0,1] range
-			return 0.5f * (hit_result.value().normal + Vec3{ 1.f, 1.f, 1.f });
+			// 0.5f * (hit_result.value().normal + Vec3{ 1.f, 1.f, 1.f });
+			const Vec3 direction{ utility_functions::random_on_sphere_vec(hit_result.value().normal) };
+			return 0.5f * ray_color(Ray{ hit_result.value().hit_point, direction }, objects);
 		}
 
 		const Vec3 rey_direction_normalized{ ray.get_direction().unit_vector() };

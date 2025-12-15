@@ -45,7 +45,7 @@ auto main() -> int
 
 	// Spheres
 	auto sphere{ std::make_unique<Sphere>(Sphere{Vec3{ 0.f, 0.f, -1.f }, .3f }) };
-	HittableList objects{ std::make_unique<Sphere>(Sphere{Vec3{ 0.f, 0.f, -1.f }, .3f }) };
+	HittableList objects{ std::make_unique<Sphere>(Sphere{Vec3{ 0.f, 0.f, -1.f }, .5f }) };
 	objects.add(std::make_unique<Sphere>(Sphere{ Vec3{ 0.f, -100.f, -1.f }, 99.5f }));
 
 	ProgressIndicator progress_bar{ 100 };
