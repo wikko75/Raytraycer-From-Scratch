@@ -49,4 +49,30 @@ namespace utility_functions {
 	{
 		return Vec3{ random_real_number(range_min, range_max), random_real_number(range_min, range_max), random_real_number(range_min, range_max) };
 	}
+
+	inline auto random_unit_vec() -> Vec3
+	{
+		Vec3 random_vec{ random_vec3(-1.f, 1.f) };
+		float length_squared{ random_vec.length_squared() };
+
+		while (length_squared > 1.f || length_squared < 1e-160)
+		{
+			random_vec = random_vec3(-1.f, 1.f);
+			length_squared = random_vec.length_squared();
+		}
+
+		return random_vec.unit_vector();
+	}
+
+	inline auto random_on_sphere_vec(const Vec3& normal) -> Vec3
+	{
+		const Vec3 random_vec{ random_unit_vec() };
+
+		if (Vec3::dot(random_vec, normal) > 0)
+		{
+			return random_vec;
+		}
+
+		return -random_vec;
+	}
 }
