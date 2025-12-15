@@ -1,4 +1,4 @@
 #pragma once
 #include "Vec.h"
 
-using Color3 = Vec<float, float, float>;
+using Color3 = Vec<double, double, double>;

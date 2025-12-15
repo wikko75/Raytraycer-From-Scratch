@@ -23,18 +23,18 @@ auto Sphere::hit(const Ray& ray, const Interval& ray_interval) const -> std::opt
 	//return delta >= 0 ? (- b - static_cast<float>( std::sqrt(delta) ) / (2 * a) : -1.f;
 
 	//simplified
-	const float a{ ray.get_direction().length_squared() };
-	const float h{ Vec3::dot(ray.get_direction(), m_position - ray.get_origin()) };
-	const float c{ (m_position - ray.get_origin()).length_squared() - m_radius * m_radius };
+	const double a{ ray.get_direction().length_squared() };
+	const double h{ Vec3::dot(ray.get_direction(), m_position - ray.get_origin()) };
+	const double c{ (m_position - ray.get_origin()).length_squared() - m_radius * m_radius };
 
-	const float delta{ (h * h) - (a * c) };
+	const double delta{ (h * h) - (a * c) };
 
 	if (delta < 0)
 	{
 		return {};
 	}
 
-	float t{ (h - std::sqrt(delta)) / a };
+	double t{ (h - std::sqrt(delta)) / a };
 
 	if (!ray_interval.surrounds(t))
 	{
