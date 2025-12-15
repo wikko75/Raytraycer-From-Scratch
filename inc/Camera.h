@@ -11,11 +11,12 @@
 class Camera
 {
 public:
-	explicit constexpr Camera(const Vec3& position, const Viewport& viewport, float focal_length, uint32_t samples_count = 100)
+	explicit constexpr Camera(const Vec3& position, const Viewport& viewport, float focal_length, uint32_t samples_count = 100, uint16_t ray_depth = 100)
 		: m_position{ position }
 		, m_viewport{ viewport }
 		, m_focal_length{ focal_length }
 		, m_samples_count{ samples_count }
+		, m_max_ray_depth{ ray_depth }
 	{
 		m_viewport_upper_left = m_position - Vec3{ 0.f, 0.f, m_focal_length } - m_viewport.u / 2 - m_viewport.v / 2;
 		m_pixel_00_location = m_viewport_upper_left + 0.5 * (m_viewport.pixel_delta_u + m_viewport.pixel_delta_v);
@@ -42,7 +43,7 @@ public:
 			const Vec3 ray_direction{ pixel_position - m_position };
 
 			const Ray ray{ m_position, ray_direction };
-			result += ray_color(ray, objects);
+			result += ray_color(ray, objects, 0);
 		}
 
 		return result / m_samples_count;
@@ -50,8 +51,13 @@ public:
 
 private:
 
-	[[nodiscard]] constexpr auto ray_color(const Ray& ray, const HittableList& objects) const -> Color3
+	[[nodiscard]] constexpr auto ray_color(const Ray& ray, const HittableList& objects, uint32_t ray_depth) const -> Color3
 	{
+		if (ray_depth == m_max_ray_depth)
+		{
+			return Color3{ 0.f,0.f,0.f };
+		}
+
 		const auto hit_result{ objects.hit(ray, Interval{0.f, constants::infinity}) };
 
 		if (hit_result.has_value())
@@ -59,11 +65,11 @@ private:
 			// map normal to RGB [0,1] range
 			// 0.5f * (hit_result.value().normal + Vec3{ 1.f, 1.f, 1.f });
 			const Vec3 direction{ utility_functions::random_on_sphere_vec(hit_result.value().normal) };
-			return 0.5f * ray_color(Ray{ hit_result.value().hit_point, direction }, objects);
+			return 0.5f * ray_color(Ray{ hit_result.value().hit_point, direction }, objects, ++ray_depth);
 		}
 
 		const Vec3 rey_direction_normalized{ ray.get_direction().unit_vector() };
-		return utility_functions::lerp(Color3{ 1.f, 1.f, 1.f }, Color3{ 0.f,0.f,1.f }, 0.5f * (rey_direction_normalized.y() + 1.f));
+		return utility_functions::lerp(Color3{ 1.f, 1.f, 1.f }, Color3{ 0.6f,0.6f,1.f }, 0.5f * (rey_direction_normalized.y() + 1.f));
 	}
 
 private:
@@ -71,6 +77,7 @@ private:
 	Viewport m_viewport;
 	float m_focal_length;
 	uint32_t m_samples_count;
+	uint32_t m_max_ray_depth;
 
 	Vec3 m_viewport_upper_left{ 0.f,0.f,0.f };
 	Vec3 m_pixel_00_location{ 0.f,0.f,0.f };
