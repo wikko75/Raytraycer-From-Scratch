@@ -58,7 +58,7 @@ private:
 			return Color3{ 0.f,0.f,0.f };
 		}
 
-		const auto hit_result{ objects.hit(ray, Interval{0.f, constants::infinity}) };
+		const auto hit_result{ objects.hit(ray, Interval{0.001f, constants::infinity}) };
 
 		if (hit_result.has_value())
 		{
