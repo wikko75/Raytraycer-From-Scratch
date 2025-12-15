@@ -53,7 +53,7 @@ namespace utility_functions {
 	inline auto random_unit_vec() -> Vec3
 	{
 		Vec3 random_vec{ random_vec3(-1.f, 1.f) };
-		float length_squared{ random_vec.length_squared() };
+		double length_squared{ random_vec.length_squared() };
 
 		while (length_squared > 1.f || length_squared < 1e-160)
 		{

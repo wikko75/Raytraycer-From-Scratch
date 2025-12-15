@@ -11,7 +11,7 @@ public:
 
 	struct HitResult
 	{
-		float t;
+		double t;
 		Vec3 hit_point;
 		Vec3 normal;
 		bool front_face;

@@ -216,5 +216,5 @@ struct std::formatter<Vec<Args...>> {
 
 
 using Point3 = Vec<float,float,float>;
-using Vec3 = Vec<float, float, float>;
+using Vec3 = Vec<double, double, double>;
 
