@@ -3,6 +3,7 @@
 #include <limits>
 #include <numbers>
 #include <random>
+#include <cmath>
 
 namespace constants {
 
@@ -79,5 +80,11 @@ namespace utility_functions {
 	inline auto random_lambertian_distribution_vec(const Vec3& normal) -> Vec3
 	{
 		return random_unit_vec() + normal;
+	}
+
+	[[nodiscard]] inline auto near_zero_vec3(const Vec3& vec) -> bool
+	{
+		constexpr double s{ 1e-8 };
+		return (std::fabs(vec.x()) < s) && (std::fabs(vec.y()) < s) && (std::fabs(vec.z()) < s);
 	}
 }

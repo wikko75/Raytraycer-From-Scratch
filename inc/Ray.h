@@ -48,7 +48,14 @@ public:
 			case Material::Type::LAMBERTIAN:
 			{
 				result.attenuation = hit_result.material->albedo;
-				result.ray = Ray{ hit_result.hit_point, utility_functions::random_lambertian_distribution_vec(hit_result.normal) };
+				Vec3 scatter_direction{ utility_functions::random_lambertian_distribution_vec(hit_result.normal) };
+				
+				if (utility_functions::near_zero_vec3(scatter_direction))
+				{
+					scatter_direction = hit_result.normal;
+				}
+
+				result.ray = Ray{ hit_result.hit_point, scatter_direction};
 				break;
 			}
 			case Material::Type::METAL:
