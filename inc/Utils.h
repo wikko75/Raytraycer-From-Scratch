@@ -87,4 +87,9 @@ namespace utility_functions {
 		constexpr double s{ 1e-8 };
 		return (std::fabs(vec.x()) < s) && (std::fabs(vec.y()) < s) && (std::fabs(vec.z()) < s);
 	}
+
+	[[nodiscard]] inline auto reflect(const Vec3& vec, const Vec3& normal) -> Vec3
+	{
+		return vec - 2 * Vec3::dot(vec, normal) * normal;
+	}
 }
