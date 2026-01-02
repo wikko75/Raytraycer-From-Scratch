@@ -4,11 +4,14 @@
 #include "Sphere.h"
 #include "Vec.h"
 #include <cmath>
+#include <Material.h>
+#include <memory>
 #include <optional>
 
-Sphere::Sphere(const Vec3& position, float radius)
+Sphere::Sphere(const Vec3& position, float radius, const Material& material)
 	: m_position{ position }
 	, m_radius{ radius }
+	, m_material{std::make_unique<Material>(material)}
 {
 }
 
@@ -50,7 +53,7 @@ auto Sphere::hit(const Ray& ray, const Interval& ray_interval) const -> std::opt
 	const Vec3 hit_point{ ray.at(t) };
 	const Vec3 normal{ (hit_point - m_position) / m_radius };
 	
-	HitResult hit_result{ .t = t, .hit_point = hit_point, .normal = normal, .front_face{} };
+	HitResult hit_result{ .t = t, .hit_point = hit_point, .normal = normal, .front_face{}, .material = m_material.get()};
 	hit_result.set_face_normal(ray, normal);
 
 	return std::optional{ hit_result };

@@ -2,14 +2,16 @@
 
 #include "Hittable.h"
 #include "Interval.h"
+#include "Material.h"
 #include "Ray.h"
 #include "Vec.h"
+#include <memory>
 #include <optional>
 
 class Sphere : public Hittable
 {
 public:
-	Sphere(const Vec3& position, float radius);
+	Sphere(const Vec3& position, float radius, const Material& material);
 	// Inherited via Hittable
 	[[nodiscard]] auto hit(const Ray& ray, const Interval& ray_interval) const -> std::optional<HitResult> override;
 
@@ -18,4 +20,5 @@ public:
 private:
 	Vec3 m_position;
 	float m_radius;
+	std::unique_ptr<Material> m_material;
 };

@@ -7,6 +7,7 @@
 #include "Vec.h"
 #include "Viewport.h"
 #include <cstdint>
+#include <Material.h>
 #include <memory>
 #include <print>
 
@@ -44,9 +45,27 @@ auto main() -> int
 	constexpr Camera camera{ camera_position, viewport, camera_focal_length };
 
 	// Spheres
-	auto sphere{ std::make_unique<Sphere>(Sphere{Vec3{ 0.f, 0.f, -1.f }, .3f }) };
-	HittableList objects{ std::make_unique<Sphere>(Sphere{Vec3{ 0.f, 0.f, -1.f }, .5f }) };
-	objects.add(std::make_unique<Sphere>(Sphere{ Vec3{ 0.f, -100.f, -1.f }, 99.5f }));
+	HittableList objects{
+		std::make_unique<Sphere>(
+			Vec3{ 0.f, 0.f, -1.f },
+			.5f,
+			Material{
+				.type = Material::Type::LAMBERTIAN,
+				.albedo = Color3{ 0.1f, 0.2f, 0.5f }
+			}
+		)
+	};
+
+	objects.add(
+		std::make_unique<Sphere>(
+			Vec3{ 0.f, -100.f, -1.f },
+			99.5f,
+			Material{
+				.type = Material::Type::LAMBERTIAN,
+				.albedo = Color3{ 0.8f, 0.8f, 0.0f }
+			}
+		)
+	);
 
 	ProgressIndicator progress_bar{ 100 };
 

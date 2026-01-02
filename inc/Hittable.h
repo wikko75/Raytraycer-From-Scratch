@@ -3,6 +3,7 @@
 #include "Vec.h"
 #include <optional>
 #include "Interval.h"
+#include "Material.h"
 
 // TODO: CRTP(Curiously Recurring Template Pattern) instead of runtime polimorphism
 class Hittable
@@ -15,6 +16,7 @@ public:
 		Vec3 hit_point;
 		Vec3 normal;
 		bool front_face;
+		Material* material;
 		
 		auto set_face_normal(const Ray& ray, const Vec3& outward_normal) -> void
 		{
