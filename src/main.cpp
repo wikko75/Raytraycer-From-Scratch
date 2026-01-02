@@ -66,6 +66,17 @@ auto main() -> int
 			}
 		)
 	);
+	
+	objects.add(
+		std::make_unique<Sphere>(
+			Vec3{ -1.f, 0.f, -1.f },
+			.5f,
+			Material{
+				.type = Material::Type::METAL,
+				.albedo = Color3{ 0.8f, 0.3f, 0.0f }
+			}
+		)
+	);
 
 	ProgressIndicator progress_bar{ 100 };
 
