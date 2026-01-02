@@ -37,6 +37,7 @@
     <ClInclude Include="inc\Sphere.h" />
     <ClInclude Include="inc\Vec.h" />
     <ClInclude Include="inc\Viewport.h" />
+    <ClInclude Include="inc\Material.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

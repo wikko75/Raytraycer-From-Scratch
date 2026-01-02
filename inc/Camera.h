@@ -62,8 +62,8 @@ private:
 
 		if (hit_result.has_value())
 		{
-			const Vec3 direction{ utility_functions::random_lambertian_distribution_vec(hit_result.value().normal) };
-			return 0.5f * ray_color(Ray{ hit_result.value().hit_point, direction }, objects, ++ray_depth);
+			const auto& scatter_result{ ray.scatter(hit_result.value()) };
+			return scatter_result.attenuation * ray_color(scatter_result.ray, objects, ++ray_depth);
 		}
 
 		const Vec3 rey_direction_normalized{ ray.get_direction().unit_vector() };
