@@ -79,6 +79,17 @@ auto main() -> int
 		)
 	);
 
+	objects.add(
+		std::make_unique<Sphere>(
+			Vec3{ 1.f, 0.f, -1.f },
+			.5f,
+			Material{
+				.type = Material::Type::DIELECTRIC,
+				.refraction_index = 1.5
+			}
+		)
+	);
+
 	ProgressIndicator progress_bar{ 100 };
 
 	Color3 pixel_color{ 0.f,0.f,0.f };
