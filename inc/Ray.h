@@ -74,6 +74,15 @@ public:
 				result.ray = Ray{ hit_result.hit_point, scatter_direction};
 				break;
 			}
+			case Material::Type::DIELECTRIC:
+			{
+				const double refraction_index{ hit_result.front_face ? (1.0 / hit_result.material->refraction_index) : hit_result.material->refraction_index };
+				const Vec3 refraction_direction{ utility_functions::refract(m_direction.unit_vector(), hit_result.normal, refraction_index) };
+				
+				result.attenuation = Color3{ 1.f, 1.f, 1.f };
+				result.ray = Ray{ hit_result.hit_point, refraction_direction };
+				break;
+			}
 		}
 
 		return std::optional<ScatterResult>{result};

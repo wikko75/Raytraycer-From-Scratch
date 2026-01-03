@@ -92,4 +92,18 @@ namespace utility_functions {
 	{
 		return vec - 2 * Vec3::dot(vec, normal) * normal;
 	}
+
+	/// \brief Calculates the refracted ray direction using Snell's law.
+	/// \param vec The incident ray direction (must be normalized).
+	/// \param normal The surface normal vector (must be normalized).
+	/// \param refractive_index The ratio of refractive indices (n1/n2).
+	/// \returns The refracted ray direction.
+	[[nodiscard]] constexpr auto refract(const Vec3& vec, const Vec3& normal, float refractive_index) -> Vec3
+	{
+		const Vec3 refracted_x{ refractive_index * (vec - std::fmin(Vec3::dot(vec, normal), 1.f) * normal) };
+
+		const Vec3 refracted_y{ -normal * std::sqrtf(std::fabs(1.0 - refracted_x.length_squared())) };
+		
+		return refracted_x + refracted_y;
+	}
 }
