@@ -73,7 +73,8 @@ auto main() -> int
 			.5f,
 			Material{
 				.type = Material::Type::METAL,
-				.albedo = Color3{ 0.8f, 0.3f, 0.0f }
+				.albedo = Color3{ 0.8f, 0.3f, 0.0f },
+				.fuzz = 0.2
 			}
 		)
 	);

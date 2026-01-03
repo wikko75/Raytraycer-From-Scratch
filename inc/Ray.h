@@ -3,6 +3,7 @@
 #include "Material.h"
 #include "Utils.h"
 #include "Vec.h"
+#include <optional>
 
 class Ray
 {
@@ -40,7 +41,7 @@ public:
 	
 	// Deffered member access pattern for now
 	template<typename HitResult>
-	[[nodiscard]] auto scatter(HitResult& hit_result) const -> struct ScatterResult
+	[[nodiscard]] auto scatter(HitResult& hit_result) const -> std::optional<struct ScatterResult>
 	{
 		ScatterResult result{};
 		switch (hit_result.material->type)
@@ -60,14 +61,22 @@ public:
 			}
 			case Material::Type::METAL:
 			{
-				const Vec3 scatter_direction { utility_functions::reflect(hit_result.hit_point, hit_result.normal) };
+				Vec3 scatter_direction { utility_functions::reflect(hit_result.hit_point, hit_result.normal) };
+				// add fuzzines
+				scatter_direction = scatter_direction.unit_vector() + (hit_result.material->fuzz * utility_functions::random_unit_vec());
+				
+				if (Vec3::dot(scatter_direction, hit_result.normal) < 0.0)
+				{
+					// ray absorbed, no scattering
+					return {};
+				}
 				result.attenuation = hit_result.material->albedo;
 				result.ray = Ray{ hit_result.hit_point, scatter_direction};
 				break;
 			}
 		}
 
-		return result;
+		return std::optional<ScatterResult>{result};
 	}
 
 private:
