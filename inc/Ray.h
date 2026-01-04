@@ -5,6 +5,7 @@
 #include "Vec.h"
 #include <optional>
 #include <cmath>
+#include <algorithm>
 
 class Ray
 {
@@ -63,8 +64,9 @@ public:
 			case Material::Type::METAL:
 			{
 				Vec3 scatter_direction { utility_functions::reflect(m_direction, hit_result.normal) };
-				// add fuzzines
-				scatter_direction = scatter_direction.unit_vector() + (hit_result.material->fuzz * utility_functions::random_unit_vec());
+				// add fuzziness (clamped to [0, 1] to prevent excessive scattering)
+				const double clamped_fuzz = std::clamp(hit_result.material->fuzz, 0.0, 1.0);
+				scatter_direction = scatter_direction.unit_vector() + (clamped_fuzz * utility_functions::random_unit_vec());
 				
 				if (Vec3::dot(scatter_direction, hit_result.normal) < 0.0)
 				{
