@@ -47,7 +47,7 @@ auto main() -> int
 	// Spheres
 	HittableList objects{
 		std::make_unique<Sphere>(
-			Vec3{ 0.f, 0.f, -1.f },
+			Vec3{ 0.f, 0.f, -1.3f },
 			.5f,
 			Material{
 				.type = Material::Type::LAMBERTIAN,
@@ -86,6 +86,16 @@ auto main() -> int
 			Material{
 				.type = Material::Type::DIELECTRIC,
 				.refraction_index = 1.5
+			}
+		)
+	);
+	objects.add(
+		std::make_unique<Sphere>(
+			Vec3{ 1.f, 0.f, -1.f },
+			.4f,
+			Material{
+				.type = Material::Type::DIELECTRIC,
+				.refraction_index = 1 / 1.5
 			}
 		)
 	);

@@ -106,4 +106,15 @@ namespace utility_functions {
 		
 		return refracted_x + refracted_y;
 	}
+
+	/// \brief Calculates the Fresnel reflectance using Schlick's Approximation.
+	/// \param cos_theta The cosine of the angle between the ray and the normal.
+	/// \param refraction_index The refractive index of the material.
+	/// \returns The reflectance value (0.0 to 1.0).
+	[[nodiscard]] inline auto schlick_approximation(double cos_theta, double refraction_index) -> double
+	{
+		double r0{ (1.0 - refraction_index) / (1.0 + refraction_index) };
+		r0 = r0 * r0;
+		return r0 + (1.0 - r0) * std::pow(1.0 - cos_theta, 5.0);
+	}
 }
