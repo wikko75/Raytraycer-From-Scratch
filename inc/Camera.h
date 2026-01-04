@@ -62,8 +62,8 @@ private:
 
 		if (!hit_result.has_value())
 		{
-			const Vec3 rey_direction_normalized{ ray.get_direction().unit_vector() };
-			return utility_functions::lerp(Color3{ 1.f, 1.f, 1.f }, Color3{ 0.6f,0.6f,1.f }, 0.5f * (rey_direction_normalized.y() + 1.f));
+			const Vec3 ray_direction_normalized{ ray.get_direction().unit_vector() };
+			return utility_functions::lerp(Color3{ 1.f, 1.f, 1.f }, Color3{ 0.6f,0.6f,1.f }, 0.5f * (ray_direction_normalized.y() + 1.f));
 		}
 
 		const auto scatter_result{ ray.scatter(hit_result.value()) };
