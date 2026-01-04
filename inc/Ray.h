@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include "Vec.h"
 #include <optional>
+#include <cmath>
 
 class Ray
 {
@@ -70,17 +71,35 @@ public:
 					// ray absorbed, no scattering
 					return {};
 				}
+
 				result.attenuation = hit_result.material->albedo;
 				result.ray = Ray{ hit_result.hit_point, scatter_direction};
 				break;
 			}
 			case Material::Type::DIELECTRIC:
 			{
-				const double refraction_index{ hit_result.front_face ? (1.0 / hit_result.material->refraction_index) : hit_result.material->refraction_index };
-				const Vec3 refraction_direction{ utility_functions::refract(m_direction.unit_vector(), hit_result.normal, refraction_index) };
-				
 				result.attenuation = Color3{ 1.f, 1.f, 1.f };
-				result.ray = Ray{ hit_result.hit_point, refraction_direction };
+				
+				const double refraction_index{ hit_result.front_face ? (1.0 / hit_result.material->refraction_index) : hit_result.material->refraction_index };
+				const double cos_theta{ std::fmin(-Vec3::dot(m_direction, hit_result.normal), 1.0)};
+				const double sin_theta{ std::sqrt(1 - cos_theta * cos_theta) };
+
+				if ( 
+					(refraction_index * sin_theta > 1.0) 
+					|| 
+					(utility_functions::schlick_approximation(cos_theta, refraction_index) > utility_functions::random_real_number())
+					)
+				{
+					// reflection
+					const Vec3 scatter_direction{ utility_functions::reflect(m_direction, hit_result.normal) };
+					result.ray = Ray{ hit_result.hit_point, scatter_direction };
+				}
+				else
+				{
+					// refraction
+					const Vec3 refraction_direction{ utility_functions::refract(m_direction.unit_vector(), hit_result.normal, refraction_index) };
+					result.ray = Ray{ hit_result.hit_point, refraction_direction };
+				}
 				break;
 			}
 		}
