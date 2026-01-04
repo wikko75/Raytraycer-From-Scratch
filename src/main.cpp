@@ -7,7 +7,7 @@
 #include "Vec.h"
 #include "Viewport.h"
 #include <cstdint>
-#include <Material.h>
+#include "Material.h"
 #include <memory>
 #include <print>
 
