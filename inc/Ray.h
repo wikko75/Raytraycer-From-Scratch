@@ -62,7 +62,7 @@ public:
 			}
 			case Material::Type::METAL:
 			{
-				Vec3 scatter_direction { utility_functions::reflect(hit_result.hit_point, hit_result.normal) };
+				Vec3 scatter_direction { utility_functions::reflect(m_direction, hit_result.normal) };
 				// add fuzzines
 				scatter_direction = scatter_direction.unit_vector() + (hit_result.material->fuzz * utility_functions::random_unit_vec());
 				
