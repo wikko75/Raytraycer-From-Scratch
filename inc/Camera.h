@@ -11,24 +11,32 @@
 class Camera
 {
 public:
-	explicit Camera(const Vec3& position, const Viewport& viewport, const Vec3& look_at, float fov = 90.f, uint32_t samples_count = 100, uint16_t ray_depth = 100)
-		: m_position{ position }
-		, m_viewport{ viewport }
-		, m_focal_length{ (position - look_at).length()}
-		, m_fov{fov}
-		, m_samples_count{ samples_count }
-		, m_max_ray_depth{ ray_depth }
+
+	struct Settings
+	{
+		Vec3 position;
+		Viewport viewport;
+		Vec3 look_at;
+		float fov = 90.f;
+		uint32_t samples_count = 100;
+		uint16_t ray_depth = 100;
+	};
+
+	explicit Camera(const Settings& settings)
+		: m_settings{ settings }
+		, m_focal_length{ (settings.position - settings.look_at).length()}
 	{
 		// cross product between (-direction and right) and (up and -direction) to setup proper direction vecs
 		// why -direction? -> because right hand rule, we're going towards negative z axis
-		m_direction = (look_at - m_position).unit_vector();
+		m_direction = (settings.look_at - m_settings.position).unit_vector();
 		m_right = Vec3::cross(m_up, -m_direction).unit_vector();
 		m_up = Vec3::cross(-m_direction, m_right).unit_vector();
 
-		m_viewport.adjust(m_fov, m_focal_length, m_up, m_right);
-		m_viewport_upper_left = m_position + m_direction * m_focal_length - m_viewport.u / 2 - m_viewport.v / 2;
-		m_pixel_00_location = m_viewport_upper_left + 0.5 * (m_viewport.pixel_delta_u + m_viewport.pixel_delta_v);
+		m_settings.viewport.adjust(m_settings.fov, m_focal_length, m_up, m_right);
+		m_viewport_upper_left = m_settings.position + m_direction * m_focal_length - m_settings.viewport.u / 2 - m_settings.viewport.v / 2;
+		m_pixel_00_location = m_viewport_upper_left + 0.5 * (m_settings.viewport.pixel_delta_u + m_settings.viewport.pixel_delta_v);
 	}
+
 
 	// Sends ray to specified image pixel - (row, column)
 	// Return: Color3 for specified image pixel
@@ -38,30 +46,30 @@ public:
 		// to pixels offset by random offset in [-.5,.5]
 		// computing resulting sample value by blending rays together
 
-		const Vec3 base_pixel{ m_pixel_00_location + (column * m_viewport.pixel_delta_u) + (row * m_viewport.pixel_delta_v) };
+		const Vec3 base_pixel{ m_pixel_00_location + (column * m_settings.viewport.pixel_delta_u) + (row * m_settings.viewport.pixel_delta_v) };
 
 		Color3 result{ 0.f,0.f,0.f };
-		for (uint32_t i{ 0 }; i < m_samples_count; ++i)
+		for (uint32_t i{ 0 }; i < m_settings.samples_count; ++i)
 		{
 			// random offset
 			const float rx{ utility_functions::random_real_number(-0.5f, 0.5f) };
 			const float ry{ utility_functions::random_real_number(-0.5f, 0.5f) };
 
-			const Vec3 pixel_position{ base_pixel + (rx * m_viewport.pixel_delta_u) + (ry * m_viewport.pixel_delta_v) };
-			const Vec3 ray_direction{ pixel_position - m_position };
+			const Vec3 pixel_position{ base_pixel + (rx * m_settings.viewport.pixel_delta_u) + (ry * m_settings.viewport.pixel_delta_v) };
+			const Vec3 ray_direction{ pixel_position - m_settings.position };
 
-			const Ray ray{ m_position, ray_direction };
+			const Ray ray{ m_settings.position, ray_direction };
 			result += ray_color(ray, objects, 0);
 		}
 
-		return result / m_samples_count;
+		return result / m_settings.samples_count;
 	}
 
 private:
 
 	[[nodiscard]] constexpr auto ray_color(const Ray& ray, const HittableList& objects, uint32_t ray_depth) const -> Color3
 	{
-		if (ray_depth == m_max_ray_depth)
+		if (ray_depth == m_settings.ray_depth)
 		{
 			return Color3{ 0.f,0.f,0.f };
 		}
@@ -85,12 +93,8 @@ private:
 	}
 
 private:
-	Vec3 m_position;
-	Viewport m_viewport;
+	Settings m_settings;
 	float m_focal_length;
-	float m_fov;
-	uint32_t m_samples_count;
-	uint32_t m_max_ray_depth;
 
 	Vec3 m_viewport_upper_left{ 0.f,0.f,0.f };
 	Vec3 m_pixel_00_location{ 0.f,0.f,0.f };

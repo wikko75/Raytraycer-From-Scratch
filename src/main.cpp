@@ -41,7 +41,12 @@ auto main() -> int
 	constexpr Vec3 camera_position{ 5.f, 1.f, 1.f };
 
 	constexpr Viewport viewport{ image_width, image_height };
-	Camera camera{ camera_position, viewport, Vec3{0.f, 0.f, -1.f}, 45.f};
+	Camera camera{ Camera::Settings{
+		.position = camera_position,
+		.viewport = viewport,
+		.look_at = Vec3{0.f, 0.f, -1.f},
+		.fov = 45.f} 
+	};
 
 	// Spheres
 	HittableList objects{
