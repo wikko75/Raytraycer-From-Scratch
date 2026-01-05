@@ -31,14 +31,14 @@ struct Viewport
 		pixel_delta_v = Vec3{ v / image_height };
 	}
 
-	auto adjust(float fov, float focal_length) -> void
+	auto adjust(float fov, float focal_length, const Vec3& camera_up, const Vec3& camera_right) -> void
 	{
 		const float h{ static_cast<float>(std::tan(utility_functions::radians(fov/2.f)) * focal_length) };
 		height = 2 * h;
 		width = height * (static_cast<float>(image_width) / image_height);
 
-		u = Vec3{ width, 0.f, 0.f };
-		v = Vec3{ 0.f, -height, 0.f };
+		u = width * camera_right;
+		v = height * -camera_up;
 
 		pixel_delta_u = Vec3{ u / image_width };
 		pixel_delta_v = Vec3{ v / image_height };

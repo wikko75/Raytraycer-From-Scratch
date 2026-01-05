@@ -11,16 +11,22 @@
 class Camera
 {
 public:
-	explicit Camera(const Vec3& position, const Viewport& viewport, float focal_length, float fov, uint32_t samples_count = 100, uint16_t ray_depth = 100)
+	explicit Camera(const Vec3& position, const Viewport& viewport, const Vec3& look_at, float fov = 90.f, uint32_t samples_count = 100, uint16_t ray_depth = 100)
 		: m_position{ position }
 		, m_viewport{ viewport }
-		, m_focal_length{ focal_length }
+		, m_focal_length{ (position - look_at).length()}
 		, m_fov{fov}
 		, m_samples_count{ samples_count }
 		, m_max_ray_depth{ ray_depth }
 	{
-		m_viewport.adjust(m_fov, m_focal_length);
-		m_viewport_upper_left = m_position - Vec3{ 0.f, 0.f, m_focal_length } - m_viewport.u / 2 - m_viewport.v / 2;
+		// cross product between (-direction and right) and (up and -direction) to setup proper direction vecs
+		// why -direction? -> because right hand rule, we're going towards negative z axis
+		m_direction = (look_at - m_position).unit_vector();
+		m_right = Vec3::cross(m_up, -m_direction).unit_vector();
+		m_up = Vec3::cross(-m_direction, m_right).unit_vector();
+
+		m_viewport.adjust(m_fov, m_focal_length, m_up, m_right);
+		m_viewport_upper_left = m_position + m_direction * m_focal_length - m_viewport.u / 2 - m_viewport.v / 2;
 		m_pixel_00_location = m_viewport_upper_left + 0.5 * (m_viewport.pixel_delta_u + m_viewport.pixel_delta_v);
 	}
 
@@ -88,4 +94,8 @@ private:
 
 	Vec3 m_viewport_upper_left{ 0.f,0.f,0.f };
 	Vec3 m_pixel_00_location{ 0.f,0.f,0.f };
+	
+	Vec3 m_up{ 0.f, 1.f, 0.f };
+	Vec3 m_right{ 1.f, 0.f, 0.f };
+	Vec3 m_direction{ 0.f, 0.0f, -.1f };
 };

@@ -38,11 +38,10 @@ auto main() -> int
 		return -1; 
 	}
 
-	constexpr Vec3 camera_position{ 0.f, 0.f, 0.f };
-	constexpr float camera_focal_length{ 1.f };
+	constexpr Vec3 camera_position{ 5.f, 1.f, 1.f };
 
 	constexpr Viewport viewport{ image_width, image_height };
-	Camera camera{ camera_position, viewport, camera_focal_length, 45.f};
+	Camera camera{ camera_position, viewport, Vec3{0.f, 0.f, -1.f}, 45.f};
 
 	// Spheres
 	HittableList objects{
