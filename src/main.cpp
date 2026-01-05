@@ -42,7 +42,7 @@ auto main() -> int
 	constexpr float camera_focal_length{ 1.f };
 
 	constexpr Viewport viewport{ image_width, image_height };
-	constexpr Camera camera{ camera_position, viewport, camera_focal_length };
+	Camera camera{ camera_position, viewport, camera_focal_length, 45.f};
 
 	// Spheres
 	HittableList objects{

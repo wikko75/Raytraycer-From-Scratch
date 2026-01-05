@@ -11,13 +11,15 @@
 class Camera
 {
 public:
-	explicit constexpr Camera(const Vec3& position, const Viewport& viewport, float focal_length, uint32_t samples_count = 100, uint16_t ray_depth = 100)
+	explicit Camera(const Vec3& position, const Viewport& viewport, float focal_length, float fov, uint32_t samples_count = 100, uint16_t ray_depth = 100)
 		: m_position{ position }
 		, m_viewport{ viewport }
 		, m_focal_length{ focal_length }
+		, m_fov{fov}
 		, m_samples_count{ samples_count }
 		, m_max_ray_depth{ ray_depth }
 	{
+		m_viewport.adjust(m_fov, m_focal_length);
 		m_viewport_upper_left = m_position - Vec3{ 0.f, 0.f, m_focal_length } - m_viewport.u / 2 - m_viewport.v / 2;
 		m_pixel_00_location = m_viewport_upper_left + 0.5 * (m_viewport.pixel_delta_u + m_viewport.pixel_delta_v);
 	}
@@ -80,6 +82,7 @@ private:
 	Vec3 m_position;
 	Viewport m_viewport;
 	float m_focal_length;
+	float m_fov;
 	uint32_t m_samples_count;
 	uint32_t m_max_ray_depth;
 
