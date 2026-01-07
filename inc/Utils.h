@@ -77,6 +77,16 @@ namespace utility_functions {
 		return -random_vec;
 	}
 
+	inline auto random_on_disc_vec() -> Vec3
+	{
+		Vec3 vec{ random_real_number(-1.f, 1.f), random_real_number(-1.f, 1.f), 0.f };
+		while (vec.length_squared() > 1.0f)
+		{
+			vec = Vec3{ random_real_number(-1.f, 1.f), random_real_number(-1.f, 1.f), 0.f };
+		}
+		return vec;
+	}
+
 	inline auto random_lambertian_distribution_vec(const Vec3& normal) -> Vec3
 	{
 		return random_unit_vec() + normal;

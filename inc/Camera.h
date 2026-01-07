@@ -20,6 +20,8 @@ public:
 		float fov = 90.f;
 		uint32_t samples_count = 100;
 		uint16_t ray_depth = 100;
+		float aperture = 0.f;
+		float focus_distance = 0.f;
 	};
 
 	explicit Camera(const Settings& settings)
@@ -32,8 +34,14 @@ public:
 		m_right = Vec3::cross(m_up, -m_direction).unit_vector();
 		m_up = Vec3::cross(-m_direction, m_right).unit_vector();
 
-		m_settings.viewport.adjust(m_settings.fov, m_focal_length, m_up, m_right);
-		m_viewport_upper_left = m_settings.position + m_direction * m_focal_length - m_settings.viewport.u / 2 - m_settings.viewport.v / 2;
+		// If focus_distance is <=0, focus at the look_at point
+		if (m_settings.focus_distance <= 0.f)
+		{
+			m_settings.focus_distance = m_focal_length;
+		}
+
+		m_settings.viewport.adjust(m_settings.fov, m_settings.focus_distance, m_up, m_right);
+		m_viewport_upper_left = m_settings.position + m_direction * m_settings.focus_distance - m_settings.viewport.u / 2 - m_settings.viewport.v / 2;
 		m_pixel_00_location = m_viewport_upper_left + 0.5 * (m_settings.viewport.pixel_delta_u + m_settings.viewport.pixel_delta_v);
 	}
 
@@ -56,9 +64,11 @@ public:
 			const float ry{ utility_functions::random_real_number(-0.5f, 0.5f) };
 
 			const Vec3 pixel_position{ base_pixel + (rx * m_settings.viewport.pixel_delta_u) + (ry * m_settings.viewport.pixel_delta_v) };
-			const Vec3 ray_direction{ pixel_position - m_settings.position };
+			const Vec3 on_disc_vec{ utility_functions::random_on_disc_vec() };
+			const Vec3 ray_origin{ m_settings.position + (m_right * on_disc_vec.x() + m_up * on_disc_vec.y()) * (m_settings.aperture/2.f) };
+			const Vec3 ray_direction{ pixel_position - ray_origin };
 
-			const Ray ray{ m_settings.position, ray_direction };
+			const Ray ray{ ray_origin, ray_direction };
 			result += ray_color(ray, objects, 0);
 		}
 

@@ -44,9 +44,10 @@ auto main() -> int
 	Camera camera{ Camera::Settings{
 		.position = camera_position,
 		.viewport = viewport,
-		.look_at = Vec3{0.f, 0.f, -1.f},
-		.fov = 45.f} 
-	};
+		.look_at = Vec3{ 1.f, 0.f, -1.f },
+		.fov = 45.f,
+		.aperture = 0.5f,
+	}};
 
 	// Spheres
 	HittableList objects{
