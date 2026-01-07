@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <HittableList.h>
 #include <Ray.h>
+#include <print>
 
 class Camera
 {
@@ -20,7 +21,8 @@ public:
 		float fov = 90.f;
 		uint32_t samples_count = 100;
 		uint16_t ray_depth = 100;
-		float aperture = 0.f;
+		float focal_length = 50.f; // (milimiters)
+		float f_stop = 8.f;
 		float focus_distance = 0.f;
 	};
 
@@ -30,15 +32,20 @@ public:
 	{
 		// cross product between (-direction and right) and (up and -direction) to setup proper direction vecs
 		// why -direction? -> because right hand rule, we're going towards negative z axis
-		m_direction = (settings.look_at - m_settings.position).unit_vector();
+		m_direction = (m_settings.look_at - m_settings.position).unit_vector();
 		m_right = Vec3::cross(m_up, -m_direction).unit_vector();
 		m_up = Vec3::cross(-m_direction, m_right).unit_vector();
 
 		// If focus_distance is <=0, focus at the look_at point
 		if (m_settings.focus_distance <= 0.f)
 		{
-			m_settings.focus_distance = m_focal_length;
+			m_settings.focus_distance = (m_settings.look_at - m_settings.position).length();
 		}
+
+		m_aperture = m_settings.focal_length / m_settings.f_stop / 100;
+
+		std::print("Camera settings :\nf-stop: {}\nfocal length: {}\nfocus_distance: {}\nAperture: {}\n",
+			settings.f_stop, settings.focal_length, settings.focus_distance, m_aperture);
 
 		m_settings.viewport.adjust(m_settings.fov, m_settings.focus_distance, m_up, m_right);
 		m_viewport_upper_left = m_settings.position + m_direction * m_settings.focus_distance - m_settings.viewport.u / 2 - m_settings.viewport.v / 2;
@@ -65,7 +72,7 @@ public:
 
 			const Vec3 pixel_position{ base_pixel + (rx * m_settings.viewport.pixel_delta_u) + (ry * m_settings.viewport.pixel_delta_v) };
 			const Vec3 on_disc_vec{ utility_functions::random_on_disc_vec() };
-			const Vec3 ray_origin{ m_settings.position + (m_right * on_disc_vec.x() + m_up * on_disc_vec.y()) * (m_settings.aperture/2.f) };
+			const Vec3 ray_origin{ m_settings.position + (m_right * on_disc_vec.x() + m_up * on_disc_vec.y()) * (m_aperture/2.f) };
 			const Vec3 ray_direction{ pixel_position - ray_origin };
 
 			const Ray ray{ ray_origin, ray_direction };
@@ -104,7 +111,7 @@ private:
 
 private:
 	Settings m_settings;
-	float m_focal_length;
+	float m_aperture;
 
 	Vec3 m_viewport_upper_left{ 0.f,0.f,0.f };
 	Vec3 m_pixel_00_location{ 0.f,0.f,0.f };

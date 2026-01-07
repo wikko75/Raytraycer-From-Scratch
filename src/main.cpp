@@ -45,8 +45,9 @@ auto main() -> int
 		.position = camera_position,
 		.viewport = viewport,
 		.look_at = Vec3{ 1.f, 0.f, -1.f },
-		.fov = 45.f,
-		.aperture = 0.5f,
+		.fov = 20.f,
+		.focal_length = 50.f,
+		.f_stop = 8.f
 	}};
 
 	// Spheres
