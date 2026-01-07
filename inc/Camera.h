@@ -7,7 +7,6 @@
 #include <cstdint>
 #include <HittableList.h>
 #include <Ray.h>
-#include <print>
 
 class Camera
 {
@@ -18,17 +17,15 @@ public:
 		Vec3 position;
 		Viewport viewport;
 		Vec3 look_at;
-		float fov = 90.f;
 		uint32_t samples_count = 100;
 		uint16_t ray_depth = 100;
-		float focal_length = 50.f; // (milimiters)
+		float fov = 45;
 		float f_stop = 8.f;
-		float focus_distance = 0.f;
+		float focus_distance = 0.f; // in meters
 	};
 
 	explicit Camera(const Settings& settings)
 		: m_settings{ settings }
-		, m_focal_length{ (settings.position - settings.look_at).length()}
 	{
 		// cross product between (-direction and right) and (up and -direction) to setup proper direction vecs
 		// why -direction? -> because right hand rule, we're going towards negative z axis
@@ -42,10 +39,7 @@ public:
 			m_settings.focus_distance = (m_settings.look_at - m_settings.position).length();
 		}
 
-		m_aperture = m_settings.focal_length / m_settings.f_stop / 100;
-
-		std::print("Camera settings :\nf-stop: {}\nfocal length: {}\nfocus_distance: {}\nAperture: {}\n",
-			settings.f_stop, settings.focal_length, settings.focus_distance, m_aperture);
+		m_aperture = .5f / m_settings.f_stop;
 
 		m_settings.viewport.adjust(m_settings.fov, m_settings.focus_distance, m_up, m_right);
 		m_viewport_upper_left = m_settings.position + m_direction * m_settings.focus_distance - m_settings.viewport.u / 2 - m_settings.viewport.v / 2;
