@@ -16,7 +16,7 @@ public:
 		Vec3 hit_point;
 		Vec3 normal;
 		bool front_face;
-		Material* material;
+		Material material;
 		
 		auto set_face_normal(const Ray& ray, const Vec3& outward_normal) -> void
 		{

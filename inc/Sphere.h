@@ -5,7 +5,6 @@
 #include "Material.h"
 #include "Ray.h"
 #include "Vec.h"
-#include <memory>
 #include <optional>
 
 class Sphere : public Hittable
@@ -20,5 +19,5 @@ public:
 private:
 	Vec3 m_position;
 	float m_radius;
-	std::unique_ptr<Material> m_material;
+	Material m_material;
 };
