@@ -5,9 +5,7 @@ This project is my implementation of a raytracer based on  [*Ray Tracing in One 
 ## Stack
 - Modern C++
 - Visual Studio 2022
-
-Cross platform CMake is planned to be supported.
-
+- Cross platform CMake
 
 ## Building and Runnning
 
@@ -15,6 +13,24 @@ Cross platform CMake is planned to be supported.
 1. Open `RaytraycerFromScratch.vcxproj` in Visual Studio
 2. Build the solution (__Ctrl+Shift+B__)
 3. Run the executable
+
+### `CMake`
+
+1. Generate build files:
+```
+	cmake -S . -B build -G Ninja -B CMAKE_BUILD_TYPE=Release
+```
+
+2. Build the project:
+```
+	cmake --build build
+```
+
+3. Run the executable:
+
+```
+	./build/RaytraycerFromScratch<.exe>
+```
 
 ## Sample Renders
 
