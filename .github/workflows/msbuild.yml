@@ -15,12 +15,65 @@ on:
 env:
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: .
+  ROOT_CMAKE: .
+  BUILD_DIR: build
 
 permissions:
   contents: read
 
 jobs:
-  build:
+
+  config_linux:
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install clang, cmake and Ninja
+      run: sudo apt install clang-18 libc++-18-dev libc++abi-18-dev cmake ninja-build -y
+           
+    - name: Generate CMake build files
+      run: |
+            cmake \
+            -S ${{env.ROOT_CMAKE}} \
+            -B ${{env.BUILD_DIR}} \
+            -G Ninja \
+            -D CMAKE_CXX_COMPILER=clang++-18 \
+            -D CMAKE_CXX_FLAGS="-stdlib=libc++" \
+            -D CMAKE_EXE_LINKER_FLAGS="-stdlib=libc++" \
+            -D CMAKE_BUILD_TYPE=${{matrix.build_type}}
+
+    - name: Upload build artefacts for ${{matrix.build_type}} build
+      uses: actions/upload-artifact@v4
+      with:
+        name: CMakeBuildFiles${{matrix.build_type}}
+        path: ${{env.BUILD_DIR}}/
+        retention-days: 1
+
+  build_linux:
+    runs-on: ubuntu-24.04
+    needs: config_linux
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install clang, cmake and Ninja
+      run: sudo apt install clang-18 libc++-18-dev libc++abi-18-dev cmake ninja-build -y
+
+    - name: Fetch CMakeBuildFiles${{matrix.build_type}}
+      uses: actions/download-artifact@v4
+      with:
+        name: CMakeBuildFiles${{matrix.build_type}}
+        path: ./${{env.BUILD_DIR}}
+    
+    - name: Build
+      run: cmake --build build
+      
+  build_windows:
     strategy:
       matrix:
         build_configuration: [Debug, Release]
